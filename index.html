@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <title>HustleIQ — Your Budget. Your Skills. Your Next Big Move.</title>
+  <!-- Google Fonts: Manrope -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ----- Base & Typography ----- */
+    * { font-family: 'Manrope', system-ui, -apple-system, sans-serif; }
+    body {
+      background-color: #0b0d11;
+      color: #eef2f6;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    /* ----- Animated Background Blobs ----- */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.25;
+      z-index: 0;
+      pointer-events: none;
+      will-change: transform;
+    }
+    .blob-1 { width: 500px; height: 500px; background: #a3e635; top: -120px; left: -120px; animation: float1 18s ease-in-out infinite; }
+    .blob-2 { width: 600px; height: 600px; background: #8b5cf6; bottom: -180px; right: -180px; animation: float2 22s ease-in-out infinite; }
+    .blob-3 { width: 400px; height: 400px; background: #06b6d4; top: 40%; left: 55%; animation: float3 20s ease-in-out infinite; opacity: 0.15; }
+
+    @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,80px) scale(1.1)} }
+    @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-70px,-60px) scale(1.15)} }
+    @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-50px) scale(1.2)} }
+
+    /* ----- Glass & Glow ----- */
+    .glass {
+      background: rgba(18, 22, 28, 0.65);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .glow-lime {
+      box-shadow: 0 0 30px rgba(163, 230, 53, 0.25), 0 0 80px rgba(163, 230, 53, 0.08);
+    }
+    .glow-lime:hover {
+      box-shadow: 0 0 40px rgba(163, 230, 53, 0.45), 0 0 100px rgba(163, 230, 53, 0.15);
+      transform: translateY(-2px);
+    }
+    .glow-border {
+      border: 1px solid rgba(163, 230, 53, 0.25);
+      box-shadow: 0 0 20px rgba(163, 230, 53, 0.08), inset 0 0 20px rgba(163, 230, 53, 0.02);
+    }
+    .glass-card {
+      background: rgba(20, 25, 33, 0.7);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(163, 230, 53, 0.3);
+      box-shadow: 0 0 30px rgba(163, 230, 53, 0.06);
+    }
+
+    /* ----- Gradient Text ----- */
+    .gradient-text {
+      background: linear-gradient(135deg, #d9f99d 0%, #a3e635 40%, #67e8f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gradient-text-violet {
+      background: linear-gradient(135deg, #c4b5fd, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ----- Buttons ----- */
+    .btn-primary {
+      background: linear-gradient(135deg, #a3e635, #65a30d);
+      color: #0b0d11;
+      font-weight: 700;
+      border: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.5s;
+    }
+    .btn-primary:hover::after { left: 100%; }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(163, 230, 53, 0.35);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #eef2f6;
+      transition: all 0.25s ease;
+    }
+    .btn-ghost:hover {
+      background: rgba(163, 230, 53, 0.08);
+      border-color: rgba(163, 230, 53, 0.4);
+      color: #d9f99d;
+    }
+
+    /* ----- Loading Spinner ----- */
+    .spinner {
+      border: 2.5px solid rgba(163,230,53,0.15);
+      border-top: 2.5px solid #a3e635;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ----- Idea Cards ----- */
+    .idea-card {
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeUp 0.6s ease forwards;
+      opacity: 0;
+    }
+    .idea-card:nth-child(1) { animation-delay: 0.05s; }
+    .idea-card:nth-child(2) { animation-delay: 0.15s; }
+    .idea-card:nth-child(3) { animation-delay: 0.25s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .badge-lime { background: rgba(163,230,53,0.12); color: #d9f99d; border: 1px solid rgba(163,230,53,0.25); }
+    .badge-violet { background: rgba(139,92,246,0.12); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.25); }
+    .badge-cyan { background: rgba(6,182,212,0.12); color: #67e8f9; border: 1px solid rgba(6,182,212,0.25); }
+    .badge-amber { background: rgba(245,158,11,0.12); color: #fcd34d; border: 1px solid rgba(245,158,11,0.25); }
+
+    /* ----- Expandable Plan ----- */
+    .plan-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s;
+    }
+    .plan-content.open {
+      max-height: 1200px;
+      padding-top: 0.75rem;
+    }
+
+    /* ----- Skill Suggestions ----- */
+    .skill-chip {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .skill-chip:hover, .skill-chip:focus {
+      background: rgba(163,230,53,0.15);
+      border-color: rgba(163,230,53,0.5);
+      color: #d9f99d;
+      transform: scale(1.04);
+    }
+    .skill-chip.selected {
+      background: rgba(163,230,53,0.2);
+      border-color: #a3e635;
+      color: #d9f99d;
+    }
+
+    /* ----- Navigation ----- */
+    .nav-blur {
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(11, 13, 17, 0.72);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ----- Scrollbar ----- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0b0d11; }
+    ::-webkit-scrollbar-thumb { background: #2a313c; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a3e635; }
+
+    /* ----- Copy toast ----- */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1f28;
+      color: #d9f99d;
+      border: 1px solid rgba(163,230,53,0.3);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 9999;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ----- Back to top ----- */
+    .back-to-top {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(163,230,53,0.12);
+      border: 1px solid rgba(163,230,53,0.3);
+      color: #d9f99d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 50;
+      backdrop-filter: blur(8px);
+    }
+    .back-to-top.visible { opacity: 1; pointer-events: auto; }
+    .back-to-top:hover { background: rgba(163,230,53,0.25); transform: translateY(-3px); }
+
+    /* ----- Mobile menu ----- */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open { max-height: 400px; }
+
+    /* ----- Floating preview card (hero) ----- */
+    .float-card {
+      animation: floatPreview 6s ease-in-out infinite;
+    }
+    @keyframes floatPreview {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1.5deg); }
+    }
+
+    /* ----- Responsive adjustments ----- */
+    @media (max-width: 640px) {
+      .blob { opacity: 0.15; }
+      .blob-1 { width: 300px; height: 300px; }
+      .blob-2 { width: 350px; height: 350px; }
+      .blob-3 { width: 250px; height: 250px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ANIMATED BACKGROUND BLOBS ===== -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 nav-blur transition-all duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-18">
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2.5 group" aria-label="HustleIQ home">
+          <div class="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-lime-400 to-green-600 shadow-lg shadow-lime-500/20 group-hover:shadow-lime-500/40 transition-shadow duration-300">
+            <i data-lucide="zap" class="w-5 h-5 text-black"></i>
+          </div>
+          <span class="text-xl font-extrabold tracking-tight text-white">Hustle<span class="text-lime-400">IQ</span></span>
+          <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-lime-400/10 border border-lime-400/25 text-lime-300 text-[10px] font-semibold tracking-wide ml-1">
+            <i data-lucide="sparkles" class="w-3 h-3"></i> AI-POWERED
+          </span>
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#how-it-works" class="text-sm font-medium text-gray-400 hover:text-lime-300 transition-colors duration-200">How It Works</a>
+          <a href="#explore" class="text-sm font-medium text-gray-400 hover:text-lime-300 transition-colors duration-200">Explore Ideas</a>
+          <a href="#about" class="text-sm font-medium text-gray-400 hover:text-lime-300 transition-colors duration-200">About</a>
+          <a href="#generator" class="btn-primary px-5 py-2.5 rounded-full text-sm glow-lime">Get Started</a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg text-gray-300 hover:text-lime-300 hover:bg-white/5 transition" aria-label="Toggle menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-6 h-6" id="menuIcon"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div class="mobile-menu md:hidden" id="mobileMenu">
+        <div class="pb-4 space-y-1">
+          <a href="#how-it-works" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-lime-300 hover:bg-white/5 transition">How It Works</a>
+          <a href="#explore" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-lime-300 hover:bg-white/5 transition">Explore Ideas</a>
+          <a href="#about" class="block px-4 py-2.5 rounded-lg text-sm font-medium text-gray-300 hover:text-lime-300 hover:bg-white/5 transition">About</a>
+          <a href="#generator" class="block mx-4 mt-2 btn-primary px-5 py-3 rounded-full text-sm text-center glow-lime">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section class="relative pt-28 md:pt-36 pb-16 md:pb-24 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <!-- Left: Copy -->
+        <div class="max-w-xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-lime-400"></span>
+            </span>
+            <span class="text-xs font-medium text-gray-300">Built for Nigerian entrepreneurs</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold leading-[1.1] tracking-tight text-white">
+            Turn What You Have Into <span class="gradient-text">What You Can Build.</span>
+          </h1>
+
+          <p class="mt-6 text-base sm:text-lg text-gray-400 leading-relaxed max-w-lg">
+            Discover business opportunities that match your budget, skills, and environment. Your next big move starts here.
+          </p>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-3.5">
+            <a href="#generator" class="btn-primary inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full text-base glow-lime">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+              Generate My Ideas
+            </a>
+            <a href="#how-it-works" class="btn-ghost inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium">
+              <i data-lucide="play-circle" class="w-4.5 h-4.5"></i>
+              See how it works
+            </a>
+          </div>
+
+          <!-- Trust indicators -->
+          <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs text-gray-500">
+            <span class="flex items-center gap-1.5"><i data-lucide="shield-check" class="w-4 h-4 text-lime-400/70"></i> No sign-up needed</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="zap" class="w-4 h-4 text-lime-400/70"></i> Instant AI results</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="heart-handshake" class="w-4 h-4 text-lime-400/70"></i> Made for Nigeria</span>
+          </div>
+        </div>
+
+        <!-- Right: Floating Preview Card -->
+        <div class="relative flex justify-center lg:justify-end">
+          <div class="float-card w-full max-w-sm glass-card p-6 border border-white/10 rounded-3xl shadow-2xl shadow-black/40">
+            <div class="flex items-center gap-2.5 mb-4">
+              <div class="w-8 h-8 rounded-lg bg-violet-500/20 border border-violet-400/30 flex items-center justify-center">
+                <i data-lucide="lightbulb" class="w-4 h-4 text-violet-300"></i>
+              </div>
+              <span class="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Sample idea</span>
+              <span class="ml-auto badge badge-lime"><i data-lucide="trending-up" class="w-3 h-3"></i> Low Capital</span>
+            </div>
+            <h3 class="text-lg font-bold text-white leading-snug">Mobile Phone Repair &amp; Accessories</h3>
+            <p class="mt-2 text-sm text-gray-400 leading-relaxed">Fix screens, batteries, and sell small accessories from a kiosk or online.</p>
+            <div class="mt-4 flex items-center justify-between text-xs">
+              <div>
+                <p class="text-gray-500">Startup capital</p>
+                <p class="text-lime-300 font-bold text-sm">₦45,000</p>
+              </div>
+              <div class="text-right">
+                <p class="text-gray-500">Est. monthly profit</p>
+                <p class="text-white font-semibold text-sm">₦80k – ₦150k</p>
+              </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+              <span class="badge badge-violet"><i data-lucide="smartphone" class="w-3 h-3"></i> Local</span>
+              <span class="badge badge-cyan"><i data-lucide="graduation-cap" class="w-3 h-3"></i> Beginner Friendly</span>
+            </div>
+          </div>
+          <!-- Decorative glow -->
+          <div class="absolute -inset-4 bg-gradient-to-tr from-lime-500/10 via-violet-500/10 to-cyan-500/10 rounded-[2rem] blur-2xl -z-10"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GENERATOR SECTION ===== -->
+  <section id="generator" class="relative py-16 md:py-20 z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="text-center mb-10">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          Tell Us About <span class="gradient-text-violet">Yourself</span>
+        </h2>
+        <p class="mt-3 text-gray-400 text-sm sm:text-base max-w-lg mx-auto">
+          Fill in the details below and let HustleIQ find business ideas built for your reality.
+        </p>
+      </div>
+
+      <!-- Form Card -->
+      <div class="glass-card p-6 sm:p-8 md:p-10 glow-border rounded-3xl">
+        <form id="ideaForm" novalidate>
+          <div class="grid sm:grid-cols-2 gap-5 sm:gap-6">
+            <!-- A. Budget -->
+            <div class="sm:col-span-1">
+              <label for="budget" class="block text-sm font-semibold text-gray-200 mb-2">
+                Your Budget <span class="text-lime-400">*</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-semibold text-sm pointer-events-none">₦</span>
+                <input
+                  type="number" id="budget" name="budget" min="1" step="1000" required
+                  placeholder="20000"
+                  class="w-full pl-9 pr-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-gray-600 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime-400/50 focus:border-lime-400/60 transition-all duration-200"
+                />
+              </div>
+              <p id="budgetFormatted" class="mt-1.5 text-xs text-gray-500 h-4 transition-colors">Enter a valid amount in Naira</p>
+            </div>
+
+            <!-- D. Business Preference -->
+            <div class="sm:col-span-1">
+              <label for="preference" class="block text-sm font-semibold text-gray-200 mb-2">
+                Business Preference
+              </label>
+              <div class="relative">
+                <select
+                  id="preference" name="preference"
+                  class="w-full appearance-none px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime-400/50 focus:border-lime-400/60 transition-all duration-200 cursor-pointer"
+                >
+                  <option value="no-preference" class="bg-[#12161c]">No preference</option>
+                  <option value="online" class="bg-[#12161c]">Online business</option>
+                  <option value="offline" class="bg-[#12161c]">Offline business</option>
+                  <option value="both" class="bg-[#12161c]">Both online &amp; offline</option>
+                </select>
+                <i data-lucide="chevron-down" class="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"></i>
+              </div>
+            </div>
+
+            <!-- B. Skills -->
+            <div class="sm:col-span-2">
+              <label for="skills" class="block text-sm font-semibold text-gray-200 mb-2">
+                Your Skills <span class="text-lime-400">*</span>
+              </label>
+              <input
+                type="text" id="skills" name="skills" required
+                placeholder="e.g. phone repairs, cooking, graphic design..."
+                class="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-gray-600 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime-400/50 focus:border-lime-400/60 transition-all duration-200"
+              />
+              <!-- Skill suggestions -->
+              <div class="mt-3 flex flex-wrap gap-2" id="skillSuggestions" role="group" aria-label="Skill suggestions">
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="phone repairs">📱 Phone repairs</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="cooking">🍳 Cooking</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="graphic design">🎨 Graphic design</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="tailoring">✂️ Tailoring</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="social media">📲 Social media</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="hair styling">💇 Hair styling</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="catering">🍲 Catering</button>
+                <button type="button" class="skill-chip px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-xs text-gray-400 font-medium" data-skill="coding">💻 Coding</button>
+              </div>
+            </div>
+
+            <!-- C. Location -->
+            <div class="sm:col-span-1">
+              <label for="location" class="block text-sm font-semibold text-gray-200 mb-2">
+                Location <span class="text-lime-400">*</span>
+              </label>
+              <input
+                type="text" id="location" name="location" required
+                placeholder="e.g. Lagos, Ibadan, Ile-Ife..."
+                list="nigeriaLocations"
+                class="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-gray-600 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime-400/50 focus:border-lime-400/60 transition-all duration-200"
+              />
+              <datalist id="nigeriaLocations">
+                <option value="Anywhere in Nigeria"></option>
+                <option value="Lagos"></option>
+                <option value="Abuja"></option>
+                <option value="Ibadan"></option>
+                <option value="Ile-Ife"></option>
+                <option value="Kano"></option>
+                <option value="Port Harcourt"></option>
+                <option value="Benin City"></option>
+                <option value="Enugu"></option>
+                <option value="Kaduna"></option>
+                <option value="Owerri"></option>
+                <option value="Abeokuta"></option>
+                <option value="Jos"></option>
+                <option value="Warri"></option>
+                <option value="Uyo"></option>
+                <option value="Calabar"></option>
+              </datalist>
+            </div>
+
+            <!-- E. Optional Resources -->
+            <div class="sm:col-span-1">
+              <label for="resources" class="block text-sm font-semibold text-gray-200 mb-2">
+                Resources <span class="text-gray-500 font-normal text-xs">(optional)</span>
+              </label>
+              <input
+                type="text" id="resources" name="resources"
+                placeholder="e.g. Android phone, laptop, small shop..."
+                class="w-full px-4 py-3 bg-white/[0.03] border border-white/10 rounded-xl text-white placeholder-gray-600 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-lime-400/50 focus:border-lime-400/60 transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <div id="formError" class="hidden mt-5 p-3.5 rounded-xl bg-red-500/10 border border-red-500/25 text-red-300 text-sm flex items-start gap-2">
+            <i data-lucide="alert-circle" class="w-4 h-4 mt-0.5 flex-shrink-0"></i>
+            <span id="formErrorText"></span>
+          </div>
+
+          <!-- Buttons -->
+          <div class="mt-7 flex flex-col sm:flex-row gap-3">
+            <button type="submit" id="generateBtn" class="btn-primary flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-base glow-lime">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+              <span id="generateBtnText">Generate 3 Business Ideas</span>
+              <span id="generateBtnSpinner" class="hidden"><span class="spinner inline-block"></span></span>
+            </button>
+            <button type="button" id="clearBtn" class="btn-ghost px-5 py-3.5 rounded-xl text-sm font-medium inline-flex items-center justify-center gap-2">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Clear
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RESULTS SECTION ===== -->
+  <section id="resultsSection" class="relative py-8 md:py-14 z-10 hidden">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          Your <span class="gradient-text">AI-Generated</span> Ideas
+        </h2>
+        <p id="resultsSubtitle" class="mt-2 text-gray-400 text-sm max-w-lg mx-auto">Three tailored opportunities based on your inputs.</p>
+      </div>
+      <div id="resultsGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"></div>
+      <!-- Generate again -->
+      <div class="mt-8 text-center">
+        <button id="generateAgainBtn" class="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i> Generate Again
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="relative py-16 md:py-24 z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          How <span class="gradient-text">HustleIQ</span> Works
+        </h2>
+        <p class="mt-3 text-gray-400 text-sm sm:text-base max-w-lg mx-auto">
+          Three simple steps to discover your next business move.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-6 md:gap-8">
+        <!-- Step 01 -->
+        <div class="glass-card p-6 md:p-8 relative group">
+          <span class="text-5xl font-extrabold text-white/5 absolute top-4 right-5 select-none">01</span>
+          <div class="w-12 h-12 rounded-2xl bg-lime-400/10 border border-lime-400/25 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+            <i data-lucide="clipboard-list" class="w-6 h-6 text-lime-300"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Tell Us What You Have</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Enter your budget, skills, location, and any resources you already own.</p>
+        </div>
+
+        <!-- Step 02 -->
+        <div class="glass-card p-6 md:p-8 relative group">
+          <span class="text-5xl font-extrabold text-white/5 absolute top-4 right-5 select-none">02</span>
+          <div class="w-12 h-12 rounded-2xl bg-violet-400/10 border border-violet-400/25 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+            <i data-lucide="brain-circuit" class="w-6 h-6 text-violet-300"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Discover Your Opportunities</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Our AI analyzes your information and generates three tailored business ideas.</p>
+        </div>
+
+        <!-- Step 03 -->
+        <div class="glass-card p-6 md:p-8 relative group">
+          <span class="text-5xl font-extrabold text-white/5 absolute top-4 right-5 select-none">03</span>
+          <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/25 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+            <i data-lucide="rocket" class="w-6 h-6 text-cyan-300"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Take Your First Step</h3>
+          <p class="text-sm text-gray-400 leading-relaxed">Follow the practical roadmap, gather what you need, and start building.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXPLORE IDEAS / BUILT FOR NIGERIA ===== -->
+  <section id="explore" class="relative py-16 md:py-20 z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass-card p-8 md:p-12 rounded-3xl glow-border overflow-hidden relative">
+        <!-- Decorative gradient -->
+        <div class="absolute -top-20 -right-20 w-60 h-60 bg-lime-400/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative">
+          <span class="badge badge-lime mb-5"><i data-lucide="map-pin" class="w-3 h-3"></i> Built for Nigeria</span>
+          <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white max-w-2xl">
+            Real opportunities for <span class="gradient-text">real Nigerian markets.</span>
+          </h2>
+          <p class="mt-4 text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl">
+            HustleIQ understands the Nigerian business landscape — from bustling Lagos markets to growing online communities. We focus on ideas that are practical, low-risk, and suited to local demand.
+          </p>
+          <div class="mt-8 grid sm:grid-cols-3 gap-4">
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+              <i data-lucide="banknote" class="w-5 h-5 text-lime-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <p class="text-sm font-semibold text-white">Low-capital friendly</p>
+                <p class="text-xs text-gray-500 mt-0.5">Ideas that respect your budget</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+              <i data-lucide="users" class="w-5 h-5 text-violet-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <p class="text-sm font-semibold text-white">Community-focused</p>
+                <p class="text-xs text-gray-500 mt-0.5">Serve needs around you</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+              <i data-lucide="wifi" class="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <p class="text-sm font-semibold text-white">Online &amp; offline</p>
+                <p class="text-xs text-gray-500 mt-0.5">Flexible to your setup</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="relative py-16 md:py-20 z-10">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+        About <span class="gradient-text">HustleIQ</span>
+      </h2>
+      <p class="mt-4 text-gray-400 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+        HustleIQ is an AI-powered business idea generator built for Nigerian entrepreneurs. Whether you have ₦5,000 or ₦500,000, a phone or a shop, our goal is to help you discover realistic opportunities and take your first step with confidence.
+      </p>
+      <p class="mt-3 text-gray-500 text-xs max-w-xl mx-auto">
+        Profit and revenue estimates are illustrative only. Actual results depend on location, demand, pricing, costs, and execution. Always do your own research before investing.
+      </p>
+      <div class="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/10 text-xs text-gray-400">
+        <i data-lucide="github" class="w-4 h-4"></i>
+        Portfolio project — built with ❤️ for the Nigerian hustle
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="relative border-t border-white/5 py-10 z-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-5">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-lime-400 to-green-600 flex items-center justify-center">
+            <i data-lucide="zap" class="w-4 h-4 text-black"></i>
+          </div>
+          <span class="text-lg font-extrabold text-white">Hustle<span class="text-lime-400">IQ</span></span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-gray-500">
+          <a href="#how-it-works" class="hover:text-lime-300 transition-colors">How It Works</a>
+          <a href="#explore" class="hover:text-lime-300 transition-colors">Explore Ideas</a>
+          <a href="#about" class="hover:text-lime-300 transition-colors">About</a>
+        </div>
+        <p class="text-xs text-gray-600">© 2026 HustleIQ. All rights reserved.</p>
+      </div>
+      <p class="mt-6 text-center text-[11px] text-gray-700 max-w-xl mx-auto">
+        Disclaimer: Profit and revenue estimates are illustrative and not guaranteed. Actual results depend on location, demand, pricing, costs, and execution.
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===== BACK TO TOP ===== -->
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">
+    <i data-lucide="arrow-up" class="w-5 h-5"></i>
+  </button>
+
+  <!-- ===== TOAST ===== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // =====================================================================
+    // HUSTLEIQ — MAIN JAVASCRIPT
+    // =====================================================================
+    //
+    // ⚠️ IMPORTANT — API KEY SAFETY
+    // ---------------------------------------------------------------------
+    // Do NOT commit a real DeepSeek API key to a public GitHub repository.
+    // The key below is a placeholder. For production use, route requests
+    // through a secure backend or serverless function that injects the key.
+    //
+    // To enable real AI mode:
+    //   1. Set DEEPSEEK_API_KEY to a valid key (keep it out of public repos).
+    //   2. Set DEEPSEEK_API_URL to the correct endpoint (e.g. /chat/completions).
+    //   3. Set DEMO_MODE = false.
+    //
+    // When DEMO_MODE = true, the app uses realistic sample data and works
+    // immediately without any API key.
+    // =====================================================================
+
+    const DEEPSEEK_API_KEY = "YOUR_API_KEY_HERE";       // <-- replace in secure env
+    const DEEPSEEK_API_URL = "YOUR_API_ENDPOINT_HERE";   // <-- replace with real endpoint
+    const DEMO_MODE = true;                              // <-- set false after API setup
+
+    // =====================================================================
+    // DOM References
+    // =====================================================================
+    const form = document.getElementById('ideaForm');
+    const budgetInput = document.getElementById('budget');
+    const budgetFormatted = document.getElementById('budgetFormatted');
+    const skillsInput = document.getElementById('skills');
+    const locationInput = document.getElementById('location');
+    const preferenceSelect = document.getElementById('preference');
+    const resourcesInput = document.getElementById('resources');
+    const generateBtn = document.getElementById('generateBtn');
+    const generateBtnText = document.getElementById('generateBtnText');
+    const generateBtnSpinner = document.getElementById('generateBtnSpinner');
+    const clearBtn = document.getElementById('clearBtn');
+    const formError = document.getElementById('formError');
+    const formErrorText = document.getElementById('formErrorText');
+    const resultsSection = document.getElementById('resultsSection');
+    const resultsGrid = document.getElementById('resultsGrid');
+    const resultsSubtitle = document.getElementById('resultsSubtitle');
+    const generateAgainBtn = document.getElementById('generateAgainBtn');
+    const skillSuggestions = document.getElementById('skillSuggestions');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = document.getElementById('menuIcon');
+    const backToTopBtn = document.getElementById('backToTop');
+    const toast = document.getElementById('toast');
+
+    // =====================================================================
+    // Lucide Icons Init
+    // =====================================================================
+    function refreshIcons() {
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    }
+    refreshIcons();
+
+    // =====================================================================
+    // Budget Formatting
+    // =====================================================================
+    function formatNaira(value) {
+      if (!value || isNaN(value)) return '';
+      return '₦' + Number(value).toLocaleString('en-NG');
+    }
+
+    budgetInput.addEventListener('input', function () {
+      const val = this.value;
+      if (val && Number(val) > 0) {
+        budgetFormatted.textContent = 'Budget: ' + formatNaira(val);
+        budgetFormatted.classList.add('text-lime-400/80');
+        budgetFormatted.classList.remove('text-gray-500');
+      } else {
+        budgetFormatted.textContent = 'Enter a valid amount in Naira';
+        budgetFormatted.classList.remove('text-lime-400/80');
+        budgetFormatted.classList.add('text-gray-500');
+      }
+    });
+
+    // =====================================================================
+    // Skill Suggestion Chips
+    // =====================================================================
+    skillSuggestions.addEventListener('click', function (e) {
+      const chip = e.target.closest('.skill-chip');
+      if (!chip) return;
+      const skill = chip.dataset.skill;
+      const current = skillsInput.value.trim();
+      // Avoid duplicates (case-insensitive check)
+      const existing = current.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+      if (!existing.includes(skill.toLowerCase())) {
+        skillsInput.value = current ? current + ', ' + skill : skill;
+      }
+      chip.classList.add('selected');
+      setTimeout(() => chip.classList.remove('selected'), 400);
+    });
+
+    // =====================================================================
+    // Form Validation
+    // =====================================================================
+    function showError(msg) {
+      formErrorText.textContent = msg;
+      formError.classList.remove('hidden');
+      refreshIcons();
+    }
+    function hideError() {
+      formError.classList.add('hidden');
+    }
+
+    function validateForm() {
+      hideError();
+      const budget = parseFloat(budgetInput.value);
+      if (!budgetInput.value || isNaN(budget) || budget <= 0) {
+        showError('Please enter a valid budget amount greater than zero.');
+        budgetInput.focus();
+        return false;
+      }
+      if (!skillsInput.value.trim()) {
+        showError('Please tell us at least one skill.');
+        skillsInput.focus();
+        return false;
+      }
+      if (!locationInput.value.trim()) {
+        showError('Please enter your location.');
+        locationInput.focus();
+        return false;
+      }
+      return true;
+    }
+
+    // =====================================================================
+    // Loading State
+    // =====================================================================
+    let loadingInterval = null;
+    const loadingMessages = [
+      'Analyzing your skills…',
+      'Scanning Nigerian markets…',
+      'Matching your budget…',
+      'Crafting personalized ideas…',
+      'Almost ready…'
+    ];
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        generateBtn.disabled = true;
+        generateBtn.classList.add('opacity-80', 'cursor-not-allowed');
+        generateBtnText.textContent = 'Generating ideas…';
+        generateBtnSpinner.classList.remove('hidden');
+        let i = 0;
+        loadingInterval = setInterval(() => {
+          generateBtnText.textContent = loadingMessages[i % loadingMessages.length];
+          i++;
+        }, 1800);
+      } else {
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('opacity-80', 'cursor-not-allowed');
+        generateBtnText.textContent = 'Generate 3 Business Ideas';
+        generateBtnSpinner.classList.add('hidden');
+        if (loadingInterval) { clearInterval(loadingInterval); loadingInterval = null; }
+      }
+    }
+
+    // =====================================================================
+    // DEMO DATA — Realistic Nigerian business ideas
+    // =====================================================================
+    function getDemoIdeas(input) {
+      const budget = Number(input.budget) || 50000;
+      const skills = input.skills || 'general skills';
+      const location = input.location || 'Nigeria';
+      const preference = input.preference || 'no-preference';
+
+      // Base set of ideas
+      const ideas = [
+        {
+          name: 'Mobile Phone Repair & Accessories',
+          description: 'Offer phone screen repairs, battery replacements, and sell small accessories like chargers and earbuds from a kiosk or online.',
+          category: 'Electronics & Repairs',
+          whyMatch: `With ${formatNaira(budget)} you can buy basic repair tools and a starter stock of accessories. Your skill in ${skills} gives you an edge, and ${location} has steady demand for phone repairs.`,
+          startupCapital: Math.min(budget * 0.6, 80000),
+          materials: ['Screwdriver set', 'Phone opening tools', 'Starter accessories stock', 'Small table/kiosk space'],
+          steps: [
+            'Source basic repair tools from a local market or online.',
+            'Practice on old phones to build confidence.',
+            'Set up a small workspace at home or a kiosk.',
+            'Advertise on WhatsApp status and local Facebook groups.',
+            'Start with simple repairs and expand as you learn.'
+          ],
+          targetCustomers: 'Students, young professionals, and local residents',
+          revenue: '₦60,000 – ₦120,000 / month',
+          profit: '₦30,000 – ₦70,000 / month',
+          timeToFirstSale: '1–2 weeks',
+          difficulty: 'Beginner Friendly',
+          tip: 'Build trust by offering a short warranty on repairs and being transparent about pricing.',
+          badges: ['Low Capital', 'Beginner Friendly', 'Local Opportunity']
+        },
+        {
+          name: 'Home-Based Catering & Meal Prep',
+          description: 'Cook affordable, delicious meals and sell to busy professionals, students, or host small events from your kitchen.',
+          category: 'Food & Beverage',
+          whyMatch: `Your ${formatNaira(budget)} can cover initial ingredients and packaging. Your cooking skills and knowledge of ${location} food preferences make this a strong fit.`,
+          startupCapital: Math.min(budget * 0.5, 60000),
+          materials: ['Cooking pots & pans', 'Food packaging containers', 'Gas cooker & cylinder', 'Basic ingredients'],
+          steps: [
+            'Decide on a niche (e.g. local dishes, healthy meals, pastries).',
+            'Create a simple menu with 3–5 affordable items.',
+            'Cook sample meals and take nice photos with your phone.',
+            'Share on WhatsApp, Instagram, and local Facebook groups.',
+            'Take pre-orders and deliver or arrange pickup.'
+          ],
+          targetCustomers: 'Busy professionals, students, and small event planners',
+          revenue: '₦80,000 – ₦150,000 / month',
+          profit: '₦35,000 – ₦70,000 / month',
+          timeToFirstSale: '3–7 days',
+          difficulty: 'Beginner Friendly',
+          tip: 'Consistency is key. Deliver on time and keep your food quality high to build repeat customers.',
+          badges: ['Low Capital', 'Beginner Friendly', 'Local Opportunity']
+        },
+        {
+          name: 'Online Graphic Design Services',
+          description: 'Create logos, flyers, and social media designs for small businesses using free design tools and your phone or laptop.',
+          category: 'Creative & Digital',
+          whyMatch: `You can start with as little as ${formatNaira(budget)} using free tools like Canva. Your design skills and internet access let you serve clients across Nigeria from ${location}.`,
+          startupCapital: Math.min(budget * 0.3, 40000),
+          materials: ['Smartphone or laptop', 'Internet access', 'Free design tools (Canva, Figma)', 'Data bundle'],
+          steps: [
+            'Set up a simple portfolio using free templates.',
+            'Create 3–5 sample designs to show your style.',
+            'Join local business groups on WhatsApp and Facebook.',
+            'Offer introductory prices to get your first clients.',
+            'Deliver on time and ask for referrals.'
+          ],
+          targetCustomers: 'Small business owners, startups, and content creators',
+          revenue: '₦50,000 – ₦150,000 / month',
+          profit: '₦40,000 – ₦120,000 / month',
+          timeToFirstSale: '1–2 weeks',
+          difficulty: 'Beginner Friendly',
+          tip: 'Niche down on a specific design type (e.g. restaurant flyers) to stand out and attract better clients.',
+          badges: ['Low Capital', 'Online', 'Beginner Friendly']
+        }
+      ];
+
+      // Slightly tailor based on preference
+      if (preference === 'online') {
+        // Prioritize the online idea
+        ideas[2].badges = ['Online', 'Low Capital', 'Beginner Friendly'];
+        ideas[0].badges = ['Local Opportunity', 'Low Capital', 'Beginner Friendly'];
+      } else if (preference === 'offline') {
+        ideas[0].badges = ['Local Opportunity', 'Low Capital', 'Beginner Friendly'];
+        ideas[1].badges = ['Local Opportunity', 'Low Capital', 'Beginner Friendly'];
+      }
+
+      return ideas;
+    }
+
+    // =====================================================================
+    // AI Integration — Placeholder Function
+    // =====================================================================
+    /**
+     * generateBusinessIdeas(userInput)
+     * -------------------------------------------------
+     * @param {Object} userInput - { budget, skills, location, preference, resources }
+     * @returns {Promise<Array>} - Promise resolving to an array of exactly 3 idea objects.
+     *
+     * In DEMO_MODE, this returns realistic sample ideas immediately.
+     * When DEMO_MODE is false, it attempts to call the DeepSeek API.
+     *
+     * ⚠️ API KEY SECURITY WARNING:
+     * Never expose a real API key in frontend code for a public repo.
+     * Use a backend proxy or serverless function to inject the key safely.
+     */
+    async function generateBusinessIdeas(userInput) {
+      // --- DEMO MODE ---
+      if (DEMO_MODE) {
+        // Simulate network delay
+        await new Promise(resolve => setTimeout(resolve, 1600));
+        return getDemoIdeas(userInput);
+      }
+
+      // --- REAL API MODE (Placeholder) ---
+      // The code below shows the intended structure.
+      // Replace the endpoint and payload to match DeepSeek's API.
+      const prompt = buildPrompt(userInput);
+
+      try {
+        const response = await fetch(DEEPSEEK_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'deepseek-chat', // or appropriate model
+            messages: [
+              { role: 'system', content: 'You are a Nigerian business idea generator. Return exactly three ideas as a JSON array.' },
+              { role: 'user', content: prompt }
+            ],
+            temperature: 0.8,
+            // response_format: { type: 'json_object' } // if supported
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API responded with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        // Adjust parsing based on actual API response shape
+        let rawContent = data?.choices?.[0]?.message?.content;
+        if (!rawContent) throw new Error('Empty response from AI.');
+
+        // Attempt to extract JSON array from the response
+        let parsed;
+        try {
+          // Try direct parse
+          parsed = JSON.parse(rawContent);
+        } catch {
+          // Try to find JSON array in the text
+          const match = rawContent.match(/\[[\s\S]*\]/);
+          if (match) {
+            parsed = JSON.parse(match[0]);
+          } else {
+            throw new Error('Could not parse JSON from AI response.');
+          }
+        }
+
+        if (!Array.isArray(parsed) || parsed.length < 3) {
+          throw new Error('AI did not return three valid ideas.');
+        }
+
+        return parsed.slice(0, 3);
+      } catch (err) {
+        console.error('AI generation error:', err);
+        // Show friendly message and fall back to demo ideas
+        showToast('AI service unavailable. Showing sample ideas instead.');
+        await new Promise(resolve => setTimeout(resolve, 600));
+        return getDemoIdeas(userInput);
+      }
+    }
+
+    // =====================================================================
+    // Prompt Builder (for real API mode)
+    // =====================================================================
+    function buildPrompt(input) {
+      return `Generate exactly 3 realistic business ideas for a Nigerian entrepreneur with the following profile:
+- Budget: ₦${Number(input.budget).toLocaleString()}
+- Skills: ${input.skills}
+- Location: ${input.location}
+- Preference: ${input.preference}
+- Available resources: ${input.resources || 'none specified'}
+
+Return a JSON array of exactly 3 objects. Each object must have these keys:
+"name", "description", "category", "whyMatch", "startupCapital" (number), "materials" (array of strings), "steps" (array of strings), "targetCustomers", "revenue", "profit", "timeToFirstSale", "difficulty", "tip", "badges" (array of 2-4 short strings).
+
+Be realistic, practical, and tailored to the Nigerian market. Do not guarantee profits.`;
+    }
+
+    // =====================================================================
+    // Render Results
+    // =====================================================================
+    function renderIdeas(ideas, input) {
+      resultsGrid.innerHTML = '';
+      resultsSubtitle.textContent = `Based on your ${formatNaira(input.budget)} budget and skills, here are three tailored opportunities.`;
+
+      ideas.forEach((idea, idx) => {
+        const card = createIdeaCard(idea, idx);
+        resultsGrid.appendChild(card);
+      });
+
+      resultsSection.classList.remove('hidden');
+      refreshIcons();
+      // Smooth scroll to results
+      setTimeout(() => {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function createIdeaCard(idea, index) {
+      const div = document.createElement('div');
+      div.className = 'idea-card glass-card p-5 sm:p-6 flex flex-col h-full';
+
+      // Badges HTML
+      const badgesHTML = (idea.badges || []).map(b => {
+        let cls = 'badge-lime';
+        if (/online/i.test(b)) cls = 'badge-cyan';
+        else if (/beginner/i.test(b)) cls = 'badge-violet';
+        else if (/local/i.test(b)) cls = 'badge-amber';
+        return `<span class="badge ${cls}"><i data-lucide="check-circle" class="w-3 h-3"></i>${b}</span>`;
+      }).join('');
+
+      // Materials
+      const materialsHTML = (idea.materials || []).map(m => `
+        <li class="flex items-start gap-2 text-xs text-gray-400">
+          <i data-lucide="dot" class="w-3 h-3 text-lime-400/60 mt-0.5 flex-shrink-0"></i>
+          <span>${m}</span>
+        </li>
+      `).join('');
+
+      // Steps
+      const stepsHTML = (idea.steps || []).map((s, i) => `
+        <li class="flex items-start gap-2.5 text-xs text-gray-400">
+          <span class="w-5 h-5 rounded-full bg-lime-400/10 border border-lime-400/20 flex items-center justify-center text-[10px] font-bold text-lime-300 flex-shrink-0">${i + 1}</span>
+          <span>${s}</span>
+        </li>
+      `).join('');
+
+      div.innerHTML = `
+        <!-- Header -->
+        <div class="flex items-start justify-between gap-3 mb-3">
+          <div class="min-w-0">
+            <span class="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">${idea.category || 'Business'}</span>
+            <h3 class="text-base sm:text-lg font-bold text-white leading-snug mt-1">${idea.name}</h3>
+          </div>
+          <div class="w-9 h-9 rounded-xl bg-lime-400/10 border border-lime-400/20 flex items-center justify-center flex-shrink-0">
+            <i data-lucide="lightbulb" class="w-4.5 h-4.5 text-lime-300"></i>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="flex flex-wrap gap-1.5 mb-3">${badgesHTML}</div>
+
+        <!-- Description -->
+        <p class="text-xs text-gray-400 leading-relaxed mb-4">${idea.description}</p>
+
+        <!-- Key metrics -->
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div class="p-2.5 rounded-lg bg-white/[0.02] border border-white/5">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wide">Startup</p>
+            <p class="text-sm font-bold text-lime-300">${formatNaira(idea.startupCapital || 0)}</p>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white/[0.02] border border-white/5">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wide">Est. profit</p>
+            <p class="text-sm font-bold text-white">${idea.profit || 'Varies'}</p>
+          </div>
+        </div>
+
+        <!-- Why it matches -->
+        <div class="mb-4">
+          <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Why it matches you</p>
+          <p class="text-xs text-gray-400 leading-relaxed">${idea.whyMatch || ''}</p>
+        </div>
+
+        <!-- Expandable plan -->
+        <div class="mt-1">
+          <button class="plan-toggle flex items-center gap-1.5 text-xs font-semibold text-lime-400 hover:text-lime-300 transition-colors" aria-expanded="false">
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300 plan-chevron"></i>
+            View Full Plan
+          </button>
+          <div class="plan-content">
+            <div class="mt-2 space-y-3">
+              <!-- Materials -->
+              <div>
+                <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Materials needed</p>
+                <ul class="space-y-1">${materialsHTML}</ul>
+              </div>
+              <!-- Steps -->
+              <div>
+                <p class="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">How to start</p>
+                <ul class="space-y-1.5">${stepsHTML}</ul>
+              </div>
+              <!-- Targets & timing -->
+              <div class="grid grid-cols-2 gap-2">
+                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5">
+                  <p class="text-[10px] text-gray-500">Target customers</p>
+                  <p class="text-[11px] font-medium text-gray-300 mt-0.5">${idea.targetCustomers || '—'}</p>
+                </div>
+                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5">
+                  <p class="text-[10px] text-gray-500">Time to first sale</p>
+                  <p class="text-[11px] font-medium text-gray-300 mt-0.5">${idea.timeToFirstSale || '—'}</p>
+                </div>
+              </div>
+              <!-- Revenue & difficulty -->
+              <div class="grid grid-cols-2 gap-2">
+                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5">
+                  <p class="text-[10px] text-gray-500">Est. revenue / month</p>
+                  <p class="text-[11px] font-medium text-gray-300 mt-0.5">${idea.revenue || '—'}</p>
+                </div>
+                <div class="p-2 rounded-lg bg-white/[0.02] border border-white/5">
+                  <p class="text-[10px] text-gray-500">Difficulty</p>
+                  <p class="text-[11px] font-medium text-gray-300 mt-0.5">${idea.difficulty || '—'}</p>
+                </div>
+              </div>
+              <!-- Tip -->
+              <div class="p-2.5 rounded-lg bg-lime-400/[0.04] border border-lime-400/10">
+                <p class="text-[10px] font-semibold text-lime-400/80 uppercase tracking-wide mb-1">💡 Pro tip</p>
+                <p class="text-xs text-gray-400 leading-relaxed">${idea.tip || '—'}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+          <button class="copy-btn flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/10 text-xs font-medium text-gray-300 hover:text-lime-300 hover:border-lime-400/30 transition-all duration-200">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Idea
+          </button>
+        </div>
+      `;
+
+      // --- Attach event listeners ---
+      // Plan toggle
+      const planToggle = div.querySelector('.plan-toggle');
+      const planContent = div.querySelector('.plan-content');
+      const planChevron = div.querySelector('.plan-chevron');
+      planToggle.addEventListener('click', () => {
+        const isOpen = planContent.classList.toggle('open');
+        planChevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        planToggle.setAttribute('aria-expanded', isOpen);
+        planToggle.innerHTML = isOpen
+          ? '<i data-lucide="chevron-up" class="w-3.5 h-3.5 transition-transform duration-300 plan-chevron" style="transform:rotate(180deg)"></i> Hide Full Plan'
+          : '<i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300 plan-chevron"></i> View Full Plan';
+        refreshIcons();
+      });
+
+      // Copy button
+      const copyBtn = div.querySelector('.copy-btn');
+      copyBtn.addEventListener('click', () => {
+        const text = `${idea.name}\n\n${idea.description}\n\nCategory: ${idea.category}\nStartup capital: ${formatNaira(idea.startupCapital || 0)}\nEstimated profit: ${idea.profit || 'Varies'}\n\nWhy it matches: ${idea.whyMatch || ''}\n\nMaterials: ${(idea.materials || []).join(', ')}\n\nSteps:\n${(idea.steps || []).map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nTip: ${idea.tip || ''}`;
+        copyToClipboard(text);
+      });
+
+      return div;
+    }
+
+    // =====================================================================
+    // Copy to Clipboard
+    // =====================================================================
+    function copyToClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast('Idea copied to clipboard!');
+        }).catch(() => {
+          fallbackCopy(text);
+        });
+      } else {
+        fallbackCopy(text);
+      }
+    }
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast('Idea copied to clipboard!');
+      } catch {
+        showToast('Could not copy. Please try again.');
+      }
+      document.body.removeChild(ta);
+    }
+
+    // =====================================================================
+    // Toast Notification
+    // =====================================================================
+    let toastTimeout;
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    // =====================================================================
+    // Form Submit Handler
+    // =====================================================================
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const userInput = {
+        budget: parseFloat(budgetInput.value),
+        skills: skillsInput.value.trim(),
+        location: locationInput.value.trim(),
+        preference: preferenceSelect.value,
+        resources: resourcesInput.value.trim()
+      };
+
+      // Save to localStorage (optional)
+      try {
+        localStorage.setItem('hustleiq_lastInput', JSON.stringify(userInput));
+      } catch (_) { /* ignore storage errors */ }
+
+      setLoading(true);
+      hideError();
+
+      try {
+        const ideas = await generateBusinessIdeas(userInput);
+        if (!Array.isArray(ideas) || ideas.length === 0) {
+          throw new Error('No ideas returned.');
+        }
+        renderIdeas(ideas, userInput);
+      } catch (err) {
+        console.error('Generation failed:', err);
+        showError('Something went wrong while generating ideas. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // =====================================================================
+    // Clear Form
+    // =====================================================================
+    clearBtn.addEventListener('click', () => {
+      form.reset();
+      budgetFormatted.textContent = 'Enter a valid amount in Naira';
+      budgetFormatted.classList.remove('text-lime-400/80');
+      budgetFormatted.classList.add('text-gray-500');
+      hideError();
+      resultsSection.classList.add('hidden');
+      resultsGrid.innerHTML = '';
+      showToast('Form cleared.');
+    });
+
+    // =====================================================================
+    // Generate Again
+    // =====================================================================
+    generateAgainBtn.addEventListener('click', () => {
+      // Scroll to generator and submit
+      document.getElementById('generator').scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        form.dispatchEvent(new Event('submit', { cancelable: true }));
+      }, 400);
+    });
+
+    // =====================================================================
+    // Mobile Menu
+    // =====================================================================
+    mobileMenuBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      mobileMenuBtn.setAttribute('aria-expanded', isOpen);
+      menuIcon.setAttribute('data-lucide', isOpen ? 'x' : 'menu');
+      refreshIcons();
+    });
+
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+        menuIcon.setAttribute('data-lucide', 'menu');
+        refreshIcons();
+      });
+    });
+
+    // =====================================================================
+    // Back to Top
+    // =====================================================================
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 500) {
+        backToTopBtn.classList.add('visible');
+      } else {
+        backToTopBtn.classList.remove('visible');
+      }
+    });
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // =====================================================================
+    // Restore last input (optional localStorage)
+    // =====================================================================
+    (function restoreLastInput() {
+      try {
+        const saved = localStorage.getItem('hustleiq_lastInput');
+        if (saved) {
+          const data = JSON.parse(saved);
+          if (data.budget) {
+            budgetInput.value = data.budget;
+            budgetInput.dispatchEvent(new Event('input'));
+          }
+          if (data.skills) skillsInput.value = data.skills;
+          if (data.location) locationInput.value = data.location;
+          if (data.preference) preferenceSelect.value = data.preference;
+          if (data.resources) resourcesInput.value = data.resources;
+        }
+      } catch (_) { /* ignore */ }
+    })();
+
+    // =====================================================================
+    // Re-init icons after dynamic content
+    // =====================================================================
+    refreshIcons();
+  </script>
+</body>
+</html>
