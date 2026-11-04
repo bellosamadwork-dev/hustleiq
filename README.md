@@ -4,7 +4,7 @@ Stop wondering what business to start with your money. Let AI help you.
 
 The AI Hustle Generator is a free web tool that helps Nigerians turn a small budget and a skill into real business ideas. Enter your budget and skill, and it will generate 3 profitable hustles with a capital breakdown, step-by-step plan, and profit estimate.
 
-**Live Demo:** https://bellosamadwork-dev.github.io/ai-hustle-generator/
+**Live Demo:** https://bellosamadwork-dev.github.io/hustleiq/#generator
 
 ---
 
@@ -29,7 +29,7 @@ The AI Hustle Generator is a free web tool that helps Nigerians turn a small bud
 
 ## How To Use
 
-1. Open the live link: https://bellosamadwork-dev.github.io/ai-hustle-generator/
+1. Open the live link: https://bellosamadwork-dev.github.io/hustleiq/#generator
 2. Enter your **Budget** - e.g. N20,000, N50,000, N100,000
 3. Enter your **Skill** - e.g. Cooking, Graphic Design, Phone Repair, No skill yet
 4. Select your **Location** (optional) - Lagos, Abuja, etc.
@@ -50,6 +50,6 @@ The AI Hustle Generator is a free web tool that helps Nigerians turn a small bud
 If you want to run it on your own system:
 
 ```bash
-git clone https://github.com/bellosamadwork-dev/ai-hustle-generator.git
+git clone https://bellosamadwork-dev.github.io/hustleiq/#generator
 cd ai-hustle-generator
 # Just open index.html in your browser
